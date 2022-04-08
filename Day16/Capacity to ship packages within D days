@@ -1,0 +1,48 @@
+class Solution {
+    public int shipWithinDays(int[] weights, int days) {
+       
+        int max = 0;
+        int sum = 0;
+        
+        for(int i : weights){
+            sum += i;
+            max = Math.max(max, i);
+        }
+        
+        if(weights.length == 0)
+            return max;
+        
+        int low = max, high = sum, res= 0 ;
+        
+        while(low <= high){
+            int mid = (high - low)/2 + low;
+            
+            if(selDays(weights, mid, days) == true){
+                res = mid;
+                high = mid - 1;
+            }
+            else
+                low = mid + 1; 
+        }
+        return res;
+    }
+    
+    public static boolean selDays(int weights[], int mid, int days){
+        int d = 1;
+        int sum = 0;
+        
+        
+         for(int i=0;i<weights.length; i++){
+             sum += weights[i];
+             
+             if(sum > mid){
+                 d++;
+                 sum = weights[i];
+             }
+         }
+        return d <= days;
+    }
+}
+
+
+
