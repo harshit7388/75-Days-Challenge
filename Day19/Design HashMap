@@ -1,0 +1,86 @@
+class MyHashMap {
+    
+    private class Node {
+		Node next;
+		int val;
+		int key;
+
+		Node(int key, int value) {
+			this.key = key;
+			this.val = value;
+		}
+	}
+    
+    private Node[] table=new Node[10000]; 
+    
+    public MyHashMap() {
+        
+    }
+    
+    public void put(int key, int value) {
+		int i = index(key);
+		if (table[i] == null) {
+			
+			table[i] = new Node(-1, -1);
+		}
+    		Node prev = find(table[i], key);
+
+		if (prev.next == null) {
+			prev.next = new Node(key, value);
+		} else {
+			prev.next.val = value;
+		}
+
+	}
+
+    
+    public int get(int key) {
+        Node node  = table[index(key)];
+       
+        if(node==null) {
+            return -1;
+        }
+        Node prev = find(node,key);
+       
+        return prev.next==null?-1:prev.next.val;
+    }
+    
+    public void remove(int key) {
+        Node node = table[index(key)];
+                if(node!=null) {
+            Node prev = find(node,key);
+                        if(prev.next!=null) {
+                prev.next=prev.next.next;
+            }
+        }
+    }
+    
+    private int index(int key) {
+       
+        return key%table.length;
+    }
+    
+    private Node find(Node node,int key) {
+        Node prev = null;
+        while(node!=null) {
+           
+            if(node.key==key) {
+                return prev;
+            }
+            
+            prev=node;
+            node=node.next;
+        }
+        
+        return prev;
+    }
+    
+}
+
+/**
+ * Your MyHashMap object will be instantiated and called as such:
+ * MyHashMap obj = new MyHashMap();
+ * obj.put(key,value);
+ * int param_2 = obj.get(key);
+ * obj.remove(key);
+ */
