@@ -1,0 +1,59 @@
+class Twitter {
+
+    int count=0;
+    Map<Integer,List<List<Integer>>>map_tweets;
+    Map<Integer,Set<Integer>>map_followers;
+    public Twitter() {
+        int count=0;
+        int len=(int)1e4+1;
+        map_tweets=new HashMap<>();
+        map_followers=new HashMap<>();
+        for(int i=0;i<len;i++){
+            map_tweets.put(i,new ArrayList<>());
+            map_followers.put(i,new HashSet<>());
+            map_followers.get(i).add(i);
+        }
+         }
+    
+    public void postTweet(int userId, int tweetId) {
+        map_tweets.get(userId).add(Arrays.asList(++count,tweetId));
+    }
+    
+    public List<Integer> getNewsFeed(int userId) {
+        List<Integer>l=new ArrayList<>();
+        Queue<int[]>q=new PriorityQueue<>((a,b)->(a[0]<b[0]?1:-1));
+        for(int fol:map_followers.get(userId)){
+            if(map_tweets.get(fol).size()>0){
+                List<Integer>mid=map_tweets.get(fol).get(map_tweets.get(fol).size()-1);
+                q.add(new int[]{mid.get(0),mid.get(1),fol,map_tweets.get(fol).size()-1});
+            }
+        }
+        while(q.size()!=0&&l.size()!=10){
+            int[] mid=q.poll();
+            l.add(mid[1]);
+            if(mid[3]!=0){
+                mid[3]--;
+                List<Integer>lst=map_tweets.get(mid[2]).get(mid[3]);
+                q.add(new int[]{lst.get(0),lst.get(1),mid[2],mid[3]});
+            }
+        }
+        return l;
+    }
+    
+    public void follow(int followerId, int followeeId) {
+        map_followers.get(followerId).add(followeeId);
+    }
+    
+    public void unfollow(int followerId, int followeeId) {
+        map_followers.get(followerId).remove(followeeId);
+    }
+}
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter obj = new Twitter();
+ * obj.postTweet(userId,tweetId);
+ * List<Integer> param_2 = obj.getNewsFeed(userId);
+ * obj.follow(followerId,followeeId);
+ * obj.unfollow(followerId,followeeId);
+ */
